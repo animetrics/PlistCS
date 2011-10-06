@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>deviceToken</key>
+	<string>a5d38231876c7f79ae8cc233550b3b0435154e99a06bedc3e85550e69de3ff17</string>
+	<key>does adding stuff work?</key>
+	<string> YES! </string>
+	<key>openidUsername</key>
+	<integer>5216342</integer>
+	<key>firstreal</key>
+	<real>40.1</real>
+	<key>dictionary</key>
+	<dict>
+		<key>firstkey</key>
+		<string>firststring</string>
+		<key>secondkey</key>
+		<string>secondkey</string>
+	</dict>
+	<key>array</key>
+	<array>
+		<string>firstkey</string>
+		<integer>54985416</integer>
+		<real>514.65</real>
+	</array>
+</dict>
+</plist>

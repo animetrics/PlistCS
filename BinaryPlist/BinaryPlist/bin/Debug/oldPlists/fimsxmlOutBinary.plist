@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>image</key>
+	<dict>
+		<key>data</key>
+		<data>
+		iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABGdBTUEAAK/I
+		NwWK6QAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAKJ
+		SURBVHjavJZJaBVBEIZnYny+LMaoRE9uKETIxaCouF5c0IMiCCEHQdAQ8Cgm
+		h9ziSRQvCl48CHoQPClBMLgg8rxogmAMbomIIG5xvRiTp+Nf8A8UbXfP8h4W
+		fKRfp2f+nuqq6gqjKApsFoZh4LA1YAVYCRaDD+AOuAumbQ9YNWTShsXawC15
+		xMEQ6HAJ//P+lMK7wCePqOZkGuEwhat3gEGO34Bn4CEog3awx/J4LzhViavn
+		gXdgHHSCBovINjBifHWZ87ldfZrCLYHfloCXhvgTUMwjXKTogSCdrQXvDfHN
+		eYQ3gj9gUZDejhnCJ1zCNZ6XrOPZfcwgfN3I5S2uhT5hKRLd4FcG4U3Gbykw
+		jVmFm8ALMJvVSluDY6NnwEw1NwPUZxWWlNgLJsFR0Mz5g+CQpLqxfnccxbR7
+		oARaswoXwGruepZyuaTJMINH24gaS96fYx1vt728NiE3Rxndj8BPzg851msP
+		DPDvZTCV9YtbeV47wY0UgVVW41fgOZgAP7IKf6M7xzxfqW2pGpfozSPcRCbh
+		Ene9HVzhDVWbkPex9TCNBl13tK9ydYEH4D4LfsESydpuGlWrM+8l0cYXvHbl
+		omHHlagE4jKfsM/V4xRdSNfFhaTgWF+nxhNJpdYnPMkiIDn8lhfGY8eZyab2
+		GZWtMa+w2AWe6wIWkilL4ZgProLlam4uS6jbEhqBGgbYVsfj61UVi3gfXwLf
+		QX+lzd4GcJFXXAvbIUmxa8oDwnnGQ8D0G61Gl7kKHGaj99lIm6f8n7b9LDxh
+		pcK6BkcMvLNsi4qWdXIP91Xji2Pro/DthKAMdbGphrBccb/BFzZ3qawawgFL
+		4Vd2oPX/Uzg+Q+lK5uQV/ivAAK75twyU5R0RAAAAAElFTkSuQmCC
+		</data>
+		<key>id</key>
+		<string>marc</string>
+	</dict>
+	<key>myArray</key>
+	<array>
+		<real>3.5</real>
+	</array>
+	<key>operation</key>
+	<integer>0</integer>
+	<key>parameters</key>
+	<string>hello there</string>
+</dict>
+</plist>
