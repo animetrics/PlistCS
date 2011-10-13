@@ -1,5 +1,0 @@
-C:\Users\mark\BinaryPlists\BinaryPlist\Testing\bin\Debug\Testing.dll
-C:\Users\mark\BinaryPlists\BinaryPlist\Testing\bin\Debug\Testing.pdb
-C:\Users\mark\BinaryPlists\BinaryPlist\Testing\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\mark\BinaryPlists\BinaryPlist\Testing\obj\Debug\Testing.dll
-C:\Users\mark\BinaryPlists\BinaryPlist\Testing\obj\Debug\Testing.pdb

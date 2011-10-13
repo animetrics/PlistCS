@@ -1,0 +1,5 @@
+C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParser\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParser\bin\Debug\CSPlistParser.dll
+C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParser\bin\Debug\CSPlistParser.pdb
+C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParser\obj\Debug\CSPlistParser.dll
+C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParser\obj\Debug\CSPlistParser.pdb

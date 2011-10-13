@@ -1,5 +1,0 @@
-C:\Users\mark\BinaryPlists\BinaryPlist\BinaryPlist\bin\Debug\BinaryPlist.exe
-C:\Users\mark\BinaryPlists\BinaryPlist\BinaryPlist\bin\Debug\BinaryPlist.pdb
-C:\Users\mark\BinaryPlists\BinaryPlist\BinaryPlist\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\mark\BinaryPlists\BinaryPlist\BinaryPlist\obj\x86\Debug\BinaryPlist.exe
-C:\Users\mark\BinaryPlists\BinaryPlist\BinaryPlist\obj\x86\Debug\BinaryPlist.pdb

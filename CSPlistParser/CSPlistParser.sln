@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0CB395A9-651B-4C08-95BB-2C56F0BB8B66}"
+	ProjectSection(SolutionItems) = preProject
+		CSPlistParser.vsmdi = CSPlistParser.vsmdi
+		Local.testsettings = Local.testsettings
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSPlistParserTests", "CSPlistParserTests\CSPlistParserTests.csproj", "{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}"
+EndProject
+Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = CSPlistParser.vsmdi
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
