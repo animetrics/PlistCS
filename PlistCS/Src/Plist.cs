@@ -1,10 +1,36 @@
+//
+//   PlistCS Property List (plist) serialization and parsing library.
+//
+//   https://github.com/animetrics/PlistCS
+//   
+//   Copyright (c) 2011 Animetrics Inc. (marc@animetrics.com)
+//   
+//   Permission is hereby granted, free of charge, to any person obtaining a copy
+//   of this software and associated documentation files (the "Software"), to deal
+//   in the Software without restriction, including without limitation the rights
+//   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//   copies of the Software, and to permit persons to whom the Software is
+//   furnished to do so, subject to the following conditions:
+//   
+//   The above copyright notice and this permission notice shall be included in
+//   all copies or substantial portions of the Software.
+//   
+//   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//   THE SOFTWARE.
+
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 
-namespace PlistParser
+namespace PlistCS
 {
     public static class Plist
     {
@@ -17,7 +43,7 @@ namespace PlistParser
 
         #region Public Functions
 
-        public static Dictionary<string, object> readPlist(string path)
+        public static object readPlist(string path)
         {
             using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
             {
@@ -36,7 +62,7 @@ namespace PlistParser
             }
         }
 
-        public static Dictionary<string, object> readPlist(Stream stream)
+        public static object readPlist(Stream stream)
         {
             byte[] magicHeader = new byte[8];
             stream.Read(magicHeader, 0, 8);
@@ -57,7 +83,7 @@ namespace PlistParser
             }
         }
 
-        public static Dictionary<string, object> readPlist(byte[] data)
+        public static object readPlist(byte[] data)
         {
             List<byte> byteList = data.ToList();
             if (BitConverter.ToInt64(byteList.GetRange(0, 8).ToArray(), 0) == 3472403351741427810)
@@ -72,23 +98,23 @@ namespace PlistParser
             }
         }
 
-        public static void writeXml(Dictionary<string, object> dictionary, string path)
+        public static void writeXml(object value, string path)
         {
             using (StreamWriter writer = new StreamWriter(path))
             {
-                writer.Write(writeXml(dictionary));
+                writer.Write(writeXml(value));
             }
         }
 
-        public static void writeXml(Dictionary<string, object> dictionary, Stream stream)
+        public static void writeXml(object value, Stream stream)
         {
             using (StreamWriter writer = new StreamWriter(stream))
             {
-                writer.Write(writeXml(dictionary));
+                writer.Write(writeXml(value));
             }
         }
 
-        public static string writeXml(Dictionary<string, object> dictionary)
+        public static string writeXml(object value)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -103,7 +129,8 @@ namespace PlistParser
                     xmlWriter.WriteComment("DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" " + "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"");
                     xmlWriter.WriteStartElement("plist");
                     xmlWriter.WriteAttributeString("version", "1.0");
-                    writeDictionaryValues(dictionary, xmlWriter);
+                    //writeDictionaryValues(dictionary, xmlWriter);
+                    compose(value, xmlWriter);
                     xmlWriter.WriteEndElement();
                     xmlWriter.WriteEndDocument();
                     xmlWriter.Flush();
@@ -113,23 +140,23 @@ namespace PlistParser
             }
         }
 
-        public static void writeBinary(Dictionary<string, object> dictionary, string path)
+        public static void writeBinary(object value, string path)
         {
             using (BinaryWriter writer = new BinaryWriter(new FileStream(path, FileMode.Create)))
             {
-                writer.Write(writeBinary(dictionary));
+                writer.Write(writeBinary(value));
             }
         }
 
-        public static void writeBinary(Dictionary<string, object> dictionary, Stream stream)
+        public static void writeBinary(object value, Stream stream)
         {
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                writer.Write(writeBinary(dictionary));
+                writer.Write(writeBinary(value));
             }
         }
 
-        public static byte[] writeBinary(Dictionary<string, object> dictionary)
+        public static byte[] writeBinary(object value)
         {
             offsetTable.Clear();
             objectTable.Clear();
@@ -138,13 +165,14 @@ namespace PlistParser
             offsetByteSize = 0;
             offsetTableOffset = 0;
 
-            int totalRefs = countDictionary(dictionary);
+            //Do not count the root node, subtract by 1
+            int totalRefs = countObject(value) - 1;
 
             refCount = totalRefs;
 
             objRefSize = RegulateNullBytes(BitConverter.GetBytes(refCount)).Length;
 
-            writeBinaryDictionary(dictionary);
+            composeBinary(value);
 
             writeBinaryString("bplist00", false);
 
@@ -182,13 +210,13 @@ namespace PlistParser
 
         #region Private Functions
 
-        private static Dictionary<string, object> readXml(XmlDocument xml)
+        private static object readXml(XmlDocument xml)
         {
             XmlNode rootNode = xml.DocumentElement.ChildNodes[0];
             return (Dictionary<string, object>)parse(rootNode);
         }
 
-        private static Dictionary<string, object> readBinary(byte[] data)
+        private static object readBinary(byte[] data)
         {
             offsetTable.Clear();
             List<byte> offsetTableBytes = new List<byte>();
@@ -210,7 +238,7 @@ namespace PlistParser
 
             parseOffsetTable(offsetTableBytes);
 
-            return (Dictionary<string, object>)parseBinaryDictionary(0);
+            return parseBinary(0);
         }
 
         private static Dictionary<string, object> parseDictionary(XmlNode node)
@@ -354,45 +382,31 @@ namespace PlistParser
             writer.WriteEndElement();
         }
 
-        private static int countDictionary(Dictionary<string, object> dictionary)
+        private static int countObject(object value)
         {
             int count = 0;
-            foreach (string key in dictionary.Keys)
+            switch (value.GetType().ToString())
             {
-                count++;
-                switch (dictionary[key].GetType().ToString())
-                {
-                    case "System.Collections.Generic.Dictionary`2[System.String,System.Object]":
-                        count += (countDictionary((Dictionary<string, object>)dictionary[key]) + 1);
-                        break;
-                    case "System.Collections.Generic.List`1[System.Object]":
-                        count += (countArray((List<object>)dictionary[key]) + 1);
-                        break;
-                    default:
-                        count++;
-                        break;
-                }
-            }
-            return count;
-        }
-
-        private static int countArray(List<object> array)
-        {
-            int count = 0;
-            foreach (object obj in array)
-            {
-                switch (obj.GetType().ToString())
-                {
-                    case "System.Collections.Generic.Dictionary`2[System.String,System.Object]":
-                        count += (countDictionary((Dictionary<string, object>)obj) + 1);
-                        break;
-                    case "System.Collections.Generic.List`1[System.Object]":
-                        count += (countArray((List<object>)obj) + 1);
-                        break;
-                    default:
-                        count++;
-                        break;
-                }
+                case "System.Collections.Generic.Dictionary`2[System.String,System.Object]":
+                    Dictionary<string, object> dict = (Dictionary<string, object>)value;
+                    foreach (string key in dict.Keys)
+                    {
+                        count += countObject(dict[key]);
+                    }
+                    count += dict.Keys.Count;
+                    count++;
+                    break;
+                case "System.Collections.Generic.List`1[System.Object]":
+                    List<object> list = (List<object>)value;
+                    foreach (object obj in list)
+                    {
+                        count += countObject(obj);
+                    }
+                    count++;
+                    break;
+                default:
+                    count++;
+                    break;
             }
             return count;
         }
@@ -871,6 +885,11 @@ namespace PlistParser
             return unixTime - timeDifference;
         }
 
+        public static long GetUnixTime(long appleTime)
+        {
+            return appleTime + timeDifference;
+        }
+
         public static DateTime ConvertFromAppleTimeStamp(double timestamp)
         {
             DateTime origin = new DateTime(2001, 1, 1, 0, 0, 0, 0);
@@ -882,11 +901,6 @@ namespace PlistParser
             DateTime begin = new DateTime(2001, 1, 1, 0, 0, 0, 0);
             TimeSpan diff = date - begin;
             return Math.Floor(diff.TotalSeconds);
-        }
-
-        public static long GetUnixTime(long appleTime)
-        {
-            return appleTime + timeDifference;
         }
     }
 }

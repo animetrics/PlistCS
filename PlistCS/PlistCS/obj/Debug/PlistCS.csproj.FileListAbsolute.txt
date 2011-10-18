@@ -1,0 +1,5 @@
+C:\Users\mark\Programming\c#\PlistCS\PlistCS\obj\Debug\ResolveAssemblyReference.cache
+C:\Users\mark\Programming\c#\PlistCS\PlistCS\bin\Debug\PlistCS.dll
+C:\Users\mark\Programming\c#\PlistCS\PlistCS\bin\Debug\PlistCS.pdb
+C:\Users\mark\Programming\c#\PlistCS\PlistCS\obj\Debug\PlistCS.dll
+C:\Users\mark\Programming\c#\PlistCS\PlistCS\obj\Debug\PlistCS.pdb

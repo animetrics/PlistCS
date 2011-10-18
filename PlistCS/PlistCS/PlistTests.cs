@@ -1,10 +1,7 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PlistParser;
+﻿using System.Collections.Generic;
 using System.IO;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using PlistCS;
 
 namespace Testing
 {
@@ -68,36 +65,36 @@ namespace Testing
             CollectionAssert.AreEquivalent((Dictionary<string, object>)dict["testDictLarge"], (Dictionary<string, object>)actualDict["testDictLarge"], "Large dictionaries do not correspond.");
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ReadBinary()
         {
-            CheckDictionary(Plist.readPlist(sourceBinPath));
+            CheckDictionary((Dictionary<string, object>)Plist.readPlist(sourceBinPath));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ReadXml()
         {
-            CheckDictionary(Plist.readPlist(sourceXmlPath));
+            CheckDictionary((Dictionary<string, object>)Plist.readPlist(sourceXmlPath));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void WriteBinary()
         {
             Plist.writeBinary(CreateDictionary(), targetBinPath);
-            CheckDictionary(Plist.readPlist(targetBinPath));
+            CheckDictionary((Dictionary<string, object>)Plist.readPlist(targetBinPath));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void WriteXml()
         {
             Plist.writeXml(CreateDictionary(), targetXmlPath);
-            CheckDictionary(Plist.readPlist(targetXmlPath));
+            CheckDictionary((Dictionary<string, object>)Plist.readPlist(targetXmlPath));
         }
 
-        [TestMethod()]
+        [TestMethod]
         public void ReadWriteBinaryByteArray()
         {
-            CheckDictionary(Plist.readPlist(Plist.writeBinary(CreateDictionary())));
+            CheckDictionary((Dictionary<string, object>)Plist.readPlist(Plist.writeBinary(CreateDictionary())));
         }
     }
 }

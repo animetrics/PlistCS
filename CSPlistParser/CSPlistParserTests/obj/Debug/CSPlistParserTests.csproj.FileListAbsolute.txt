@@ -1,5 +1,0 @@
-C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParserTests\bin\Debug\CSPlistParser.dll
-C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParserTests\bin\Debug\CSPlistParser.pdb
-C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParserTests\obj\Debug\ResolveAssemblyReference.cache
-C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParserTests\obj\Debug\CSPlistParser.dll
-C:\Users\mark\Programming\c#\CSPlistParser\CSPlistParserTests\obj\Debug\CSPlistParser.pdb

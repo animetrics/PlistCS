@@ -6,11 +6,11 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{BAB6F201-D034-47B9-8F0F-57DAD6079BEA}</ProjectGuid>
+    <ProjectGuid>{E4362121-9BFA-4F11-A8CC-63382D4C2B52}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CSPlistParser</RootNamespace>
-    <AssemblyName>CSPlistParser</AssemblyName>
+    <RootNamespace>PlistCS</RootNamespace>
+    <AssemblyName>PlistCS</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Plist.cs" />
-    <Compile Include="plistTests.cs" />
+    <Compile Include="PlistTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

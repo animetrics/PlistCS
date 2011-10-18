@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("CSPlistParser")]
+[assembly: AssemblyTitle("PlistCS")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("CSPlistParser")]
+[assembly: AssemblyProduct("PlistCS")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("208cb280-817b-4fd2-8277-d4cdf6acbd94")]
+[assembly: Guid("bdb16bd8-9569-4514-9999-8b5c44d60a1f")]
 
 // Version information for an assembly consists of the following four values:
 //
