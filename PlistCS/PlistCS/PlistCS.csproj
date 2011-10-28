@@ -46,7 +46,9 @@
     </CodeAnalysisDependentAssemblyPaths>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Plist.cs" />
+    <Compile Include="..\Src\Plist.cs">
+      <Link>Plist.cs</Link>
+    </Compile>
     <Compile Include="PlistTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

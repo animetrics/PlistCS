@@ -12,7 +12,7 @@ namespace Testing
         string targetBinPath = "targetBin.plist";
         string sourceXmlPath = "testXml.plist";
         string sourceBinPath = "testBin.plist";
-        string sourceImage = "testImage.jpg";
+        string sourceImage   = "testImage.jpg";
 
         private Dictionary<string, object> CreateDictionary()
         {

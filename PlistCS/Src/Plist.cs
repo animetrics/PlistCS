@@ -56,6 +56,7 @@ namespace PlistCS
                 else
                 {
                     XmlDocument xml = new XmlDocument();
+                    xml.XmlResolver = null;
                     xml.LoadXml(System.Text.Encoding.UTF8.GetString(reader.ReadBytes((int)reader.BaseStream.Length)));
                     return readXml(xml);
                 }
@@ -125,11 +126,10 @@ namespace PlistCS
 
                 using (XmlWriter xmlWriter = XmlWriter.Create(ms, xmlWriterSettings))
                 {
-                    xmlWriter.WriteStartDocument();
+                    xmlWriter.WriteStartDocument(); 
                     xmlWriter.WriteComment("DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" " + "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"");
                     xmlWriter.WriteStartElement("plist");
                     xmlWriter.WriteAttributeString("version", "1.0");
-                    //writeDictionaryValues(dictionary, xmlWriter);
                     compose(value, xmlWriter);
                     xmlWriter.WriteEndElement();
                     xmlWriter.WriteEndDocument();
@@ -540,8 +540,7 @@ namespace PlistCS
         public static byte[] writeBinaryDate(DateTime obj)
         {
             List<byte> buffer = RegulateNullBytes(BitConverter.GetBytes(PlistDateConverter.ConvertToAppleTimeStamp(obj)), 8).ToList();
-            if (BitConverter.IsLittleEndian)
-                buffer.Reverse();
+            buffer.Reverse();
             buffer.Insert(0, 0x33);
             objectTable.InsertRange(0, buffer);
             return buffer.ToArray();
@@ -562,8 +561,7 @@ namespace PlistCS
                 buffer.Add(0);
             int header = 0x10 | (int)(Math.Log(buffer.Count) / Math.Log(2));
 
-            if (BitConverter.IsLittleEndian)
-                buffer.Reverse();
+            buffer.Reverse();
 
             buffer.Insert(0, Convert.ToByte(header));
 
@@ -580,8 +578,7 @@ namespace PlistCS
                 buffer.Add(0);
             int header = 0x20 | (int)(Math.Log(buffer.Count) / Math.Log(2));
 
-            if (BitConverter.IsLittleEndian)
-                buffer.Reverse();
+            buffer.Reverse();
 
             buffer.Insert(0, Convert.ToByte(header));
 
@@ -699,10 +696,10 @@ namespace PlistCS
             int refCount = 0;
 
             byte dictByte = objectTable[offsetTable[objRef]];
-
-            refCount = getCount(offsetTable[objRef], dictByte);
-
+            
             int refStartPosition;
+            refCount = getCount(offsetTable[objRef], out refStartPosition);
+
 
             if (refCount < 15)
                 refStartPosition = offsetTable[objRef] + 1;
@@ -732,9 +729,9 @@ namespace PlistCS
 
             byte arrayByte = objectTable[offsetTable[objRef]];
 
-            refCount = getCount(offsetTable[objRef], arrayByte);
-
             int refStartPosition;
+            refCount = getCount(offsetTable[objRef], out refStartPosition);
+
 
             if (refCount < 15)
                 refStartPosition = offsetTable[objRef] + 1;
@@ -757,15 +754,19 @@ namespace PlistCS
             return buffer;
         }
 
-        private static int getCount(int bytePosition, byte headerByte)
+        private static int getCount(int bytePosition, out int newBytePosition)
         {
+            byte headerByte = objectTable[bytePosition];
             byte headerByteTrail = Convert.ToByte(headerByte & 0xf);
+            int count;
             if (headerByteTrail < 15)
-                return headerByteTrail;
-            else
             {
-                return (int)parseBinaryInt(bytePosition + 1);
+                count = headerByteTrail;
+                newBytePosition = bytePosition + 1;
             }
+            else
+                count = (int)parseBinaryInt(bytePosition + 1, out newBytePosition);
+            return count;
         }
 
         private static object parseBinary(int objRef)
@@ -816,21 +817,26 @@ namespace PlistCS
         public static object parseBinaryDate(int headerPosition)
         {
             byte[] buffer = objectTable.GetRange(headerPosition + 1, 8).ToArray();
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(buffer);
+            Array.Reverse(buffer);
             double appleTime = BitConverter.ToDouble(buffer, 0);
             DateTime result = PlistDateConverter.ConvertFromAppleTimeStamp(appleTime);
             return result;
         }
-
+        
         private static object parseBinaryInt(int headerPosition)
+        {
+            int output;
+            return parseBinaryInt(headerPosition, out output);
+        }
+
+        private static object parseBinaryInt(int headerPosition, out int newHeaderPosition)
         {
             byte header = objectTable[headerPosition];
             int byteCount = (int)Math.Pow(2, header & 0xf);
             byte[] buffer = objectTable.GetRange(headerPosition + 1, byteCount).ToArray();
-            if (BitConverter.IsLittleEndian)
-                Array.Reverse(buffer);
-
+            Array.Reverse(buffer);
+            //Add one to account for the header byte
+            newHeaderPosition = headerPosition + byteCount + 1;
             return BitConverter.ToInt32(RegulateNullBytes(buffer, 4), 0);
         }
 
@@ -846,13 +852,8 @@ namespace PlistCS
 
         private static object parseBinaryString(int headerPosition)
         {
-            byte headerByte = objectTable[headerPosition];
-            int charCount = getCount(headerPosition, headerByte);
             int charStartPosition;
-            if (charCount < 15)
-                charStartPosition = headerPosition + 1;
-            else
-                charStartPosition = headerPosition + 2 + RegulateNullBytes(BitConverter.GetBytes(charCount), 1).Length;
+            int charCount = getCount(headerPosition, out charStartPosition);
             string buffer = "";
             foreach (byte byt in objectTable.GetRange(charStartPosition, charCount))
             {
@@ -863,13 +864,8 @@ namespace PlistCS
 
         private static object parseBinaryByteArray(int headerPosition)
         {
-            byte headerByte = objectTable[headerPosition];
-            int byteCount = getCount(headerPosition, headerByte);
             int byteStartPosition;
-            if (byteCount < 15)
-                byteStartPosition = headerPosition + 1;
-            else
-                byteStartPosition = headerPosition + 2 + RegulateNullBytes(BitConverter.GetBytes(byteCount), 1).Length;
+            int byteCount = getCount(headerPosition, out byteStartPosition);
             return objectTable.GetRange(byteStartPosition, byteCount).ToArray();
         }
 
