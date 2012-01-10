@@ -25,9 +25,10 @@
 
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Text;
 using System.Xml;
 
 namespace PlistCS
@@ -45,34 +46,50 @@ namespace PlistCS
 
         public static object readPlist(string path)
         {
-            using (BinaryReader reader = new BinaryReader(new FileStream(path, FileMode.Open, FileAccess.Read)))
+            using (FileStream f = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                long magicHeader = BitConverter.ToInt64(reader.ReadBytes(8), 0);
-                reader.BaseStream.Seek(0, SeekOrigin.Begin);
-                if (magicHeader == 3472403351741427810)
-                {
-                    return readBinary(reader.ReadBytes((int)reader.BaseStream.Length));
-                }
-                else
-                {
-                    XmlDocument xml = new XmlDocument();
-                    xml.XmlResolver = null;
-                    xml.LoadXml(System.Text.Encoding.UTF8.GetString(reader.ReadBytes((int)reader.BaseStream.Length)));
-                    return readXml(xml);
-                }
+                return readPlist(f);
             }
         }
 
-        public static object readPlist(Stream stream)
+        public static object readPlistSource(string source)
+        {
+            return readPlist(System.Text.Encoding.UTF8.GetBytes(source));
+        }
+
+        public static object readPlist(byte[] data)
+        {
+            return readPlist(new MemoryStream(data));
+        }
+
+        public static plistType getPlistType(Stream stream)
         {
             byte[] magicHeader = new byte[8];
             stream.Read(magicHeader, 0, 8);
-            stream.Seek(0, SeekOrigin.Begin);
+
             if (BitConverter.ToInt64(magicHeader, 0) == 3472403351741427810)
+            {
+                return plistType.Binary;
+            }
+            else
+            {
+                return plistType.Xml;
+            }
+        }
+
+        public static object readPlist(Stream stream, plistType type = plistType.Auto)
+        {
+            if (type == plistType.Auto)
+            {
+                type = getPlistType(stream);
+                stream.Seek(0, SeekOrigin.Begin);
+            }
+
+            if (type == plistType.Binary)
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    byte[] data = reader.ReadBytes((int)reader.BaseStream.Length);
+                    byte[] data = reader.ReadBytes((int) reader.BaseStream.Length);
                     return readBinary(data);
                 }
             }
@@ -80,21 +97,6 @@ namespace PlistCS
             {
                 XmlDocument xml = new XmlDocument();
                 xml.Load(stream);
-                return readXml(xml);
-            }
-        }
-
-        public static object readPlist(byte[] data)
-        {
-            List<byte> byteList = data.ToList();
-            if (BitConverter.ToInt64(byteList.GetRange(0, 8).ToArray(), 0) == 3472403351741427810)
-            {
-                return readBinary(data);
-            }
-            else
-            {
-                XmlDocument xml = new XmlDocument();
-                xml.LoadXml(System.Text.Encoding.UTF8.GetString(data));
                 return readXml(xml);
             }
         }
@@ -180,7 +182,7 @@ namespace PlistCS
 
             offsetTable.Add(objectTable.Count - 8);
 
-            offsetByteSize = RegulateNullBytes(BitConverter.GetBytes(offsetTable.Last())).Length;
+            offsetByteSize = RegulateNullBytes(BitConverter.GetBytes(offsetTable[offsetTable.Count-1])).Length;
 
             List<byte> offsetBytes = new List<byte>();
 
@@ -199,9 +201,15 @@ namespace PlistCS
             objectTable.AddRange(new byte[6]);
             objectTable.Add(Convert.ToByte(offsetByteSize));
             objectTable.Add(Convert.ToByte(objRefSize));
-            objectTable.AddRange(BitConverter.GetBytes((long)totalRefs + 1).Reverse());
+
+            var a = BitConverter.GetBytes((long) totalRefs + 1);
+            Array.Reverse(a);
+            objectTable.AddRange(a);
+
             objectTable.AddRange(BitConverter.GetBytes((long)0));
-            objectTable.AddRange(BitConverter.GetBytes(offsetTableOffset).Reverse());
+            a = BitConverter.GetBytes(offsetTableOffset);
+            Array.Reverse(a);
+            objectTable.AddRange(a);
 
             return objectTable.ToArray();
         }
@@ -226,7 +234,7 @@ namespace PlistCS
             offsetByteSize = 0;
             offsetTableOffset = 0;
 
-            List<byte> bList = data.ToList();
+            List<byte> bList = new List<byte>(data);
 
             List<byte> trailer = bList.GetRange(bList.Count - 32, 32);
 
@@ -309,9 +317,11 @@ namespace PlistCS
                 case "string":
                     return node.InnerText;
                 case "integer":
-                    return Convert.ToInt32(node.InnerText);
+                  //  int result;
+                    //int.TryParse(node.InnerText, System.Globalization.NumberFormatInfo.InvariantInfo, out result);
+                    return Convert.ToInt32(node.InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
                 case "real":
-                    return Convert.ToDouble(node.InnerText);
+                    return Convert.ToDouble(node.InnerText,System.Globalization.NumberFormatInfo.InvariantInfo);
                 case "false":
                     return false;
                 case "true":
@@ -329,44 +339,56 @@ namespace PlistCS
 
         private static void compose(object value, XmlWriter writer)
         {
-            switch (value.GetType().ToString())
+
+            if (value == null || value is string)
             {
-                case "System.Collections.Generic.Dictionary`2[System.String,System.Object]":
-                    writeDictionaryValues((Dictionary<string, object>)value, writer);
-                    break;
-
-                case "System.Collections.Generic.List`1[System.Object]":
-                    composeArray((List<object>)value, writer);
-                    break;
-
-                case "System.Byte[]":
-                    writer.WriteElementString("data", Convert.ToBase64String((Byte[])value));
-                    break;
-
-                case "System.Double":
-                    writer.WriteElementString("real", value.ToString());
-                    break;
-
-                case "System.Int32":
-                    writer.WriteElementString("integer", value.ToString());
-                    break;
-
-                case "System.String":
-                    writer.WriteElementString("string", value.ToString());
-                    break;
-
-                case "System.DateTime":
-                    DateTime time = (DateTime)value;
-                    string theString = XmlConvert.ToString(time, XmlDateTimeSerializationMode.Utc);
-                    writer.WriteElementString("date", theString);//, "yyyy-MM-ddTHH:mm:ssZ"));
-                    break;
-
-                case "System.Boolean":
-                    writer.WriteElementString(value.ToString().ToLower(), "");
-                    break;
-
-                default:
-                    throw new Exception(String.Format("Value type '{0}' is unhandled", value.GetType().ToString()));
+                writer.WriteElementString("string", value as string);
+            }
+            else if (value is int || value is long)
+            {
+                writer.WriteElementString("integer", ((int)value).ToString(System.Globalization.NumberFormatInfo.InvariantInfo));
+            }
+            else if (value is System.Collections.Generic.Dictionary<string, object> ||
+              value.GetType().ToString().StartsWith("System.Collections.Generic.Dictionary`2[System.String"))
+            {
+                //Convert to Dictionary<string, object>
+                Dictionary<string, object> dic = value as Dictionary<string, object>;
+                if (dic == null)
+                {
+                    dic = new Dictionary<string, object>();
+                    IDictionary idic = (IDictionary)value;
+                    foreach (var key in idic.Keys)
+                    {
+                        dic.Add(key.ToString(), idic[key]);
+                    }
+                }
+                writeDictionaryValues(dic, writer);
+            }
+            else if (value is List<object>)
+            {
+                composeArray((List<object>)value, writer);
+            }
+            else if (value is byte[])
+            {
+                writer.WriteElementString("data", Convert.ToBase64String((Byte[])value));
+            }
+            else if (value is float || value is double)
+            {
+                writer.WriteElementString("real", ((double)value).ToString(System.Globalization.NumberFormatInfo.InvariantInfo));
+            }
+            else if (value is DateTime)
+            {
+                DateTime time = (DateTime)value;
+                string theString = XmlConvert.ToString(time, XmlDateTimeSerializationMode.Utc);
+                writer.WriteElementString("date", theString);//, "yyyy-MM-ddTHH:mm:ssZ"));
+            }
+            else if (value is bool)
+            {
+                writer.WriteElementString(value.ToString().ToLower(), "");
+            }
+            else
+            {
+                throw new Exception(String.Format("Value type '{0}' is unhandled", value.GetType().ToString()));
             }
         }
 
@@ -418,14 +440,18 @@ namespace PlistCS
             List<int> refs = new List<int>();
             for (int i = dictionary.Count - 1; i >= 0; i--)
             {
-                composeBinary(dictionary.Values.ToArray()[i]);
+                var o = new object[dictionary.Count];
+                dictionary.Values.CopyTo(o, 0);
+                composeBinary(o[i]);
                 offsetTable.Add(objectTable.Count);
                 refs.Add(refCount);
                 refCount--;
             }
             for (int i = dictionary.Count - 1; i >= 0; i--)
             {
-                composeBinary(dictionary.Keys.ToArray()[i]);//);
+                var o = new string[dictionary.Count];
+                dictionary.Keys.CopyTo(o, 0);
+                composeBinary(o[i]);//);
                 offsetTable.Add(objectTable.Count);
                 refs.Add(refCount);
                 refCount--;
@@ -539,7 +565,7 @@ namespace PlistCS
 
         public static byte[] writeBinaryDate(DateTime obj)
         {
-            List<byte> buffer = RegulateNullBytes(BitConverter.GetBytes(PlistDateConverter.ConvertToAppleTimeStamp(obj)), 8).ToList();
+            List<byte> buffer =new List<byte>(RegulateNullBytes(BitConverter.GetBytes(PlistDateConverter.ConvertToAppleTimeStamp(obj)), 8));
             buffer.Reverse();
             buffer.Insert(0, 0x33);
             objectTable.InsertRange(0, buffer);
@@ -548,15 +574,15 @@ namespace PlistCS
 
         public static byte[] writeBinaryBool(bool obj)
         {
-            List<byte> buffer = new byte[1] { (bool)obj ? (byte)9 : (byte)8 }.ToList();
+            List<byte> buffer = new List<byte>(new byte[1] { (bool)obj ? (byte)9 : (byte)8 });
             objectTable.InsertRange(0, buffer);
             return buffer.ToArray();
         }
 
         private static byte[] writeBinaryInteger(int value, bool write)
         {
-            List<byte> buffer = BitConverter.GetBytes((long)value).ToList();
-            buffer = RegulateNullBytes(buffer.ToArray()).ToList();
+            List<byte> buffer = new List<byte>(BitConverter.GetBytes((long) value));
+            buffer =new List<byte>(RegulateNullBytes(buffer.ToArray()));
             while (buffer.Count != Math.Pow(2, Math.Log(buffer.Count) / Math.Log(2)))
                 buffer.Add(0);
             int header = 0x10 | (int)(Math.Log(buffer.Count) / Math.Log(2));
@@ -573,7 +599,7 @@ namespace PlistCS
 
         private static byte[] writeBinaryDouble(double value)
         {
-            List<byte> buffer = RegulateNullBytes(BitConverter.GetBytes(value), 4).ToList();
+            List<byte> buffer =new List<byte>(RegulateNullBytes(BitConverter.GetBytes(value), 4));
             while (buffer.Count != Math.Pow(2, Math.Log(buffer.Count) / Math.Log(2)))
                 buffer.Add(0);
             int header = 0x20 | (int)(Math.Log(buffer.Count) / Math.Log(2));
@@ -589,7 +615,7 @@ namespace PlistCS
 
         private static byte[] writeBinaryByteArray(byte[] value)
         {
-            List<byte> buffer = value.ToList();
+            List<byte> buffer = new List<byte>(value);
             List<byte> header = new List<byte>();
             if (value.Length < 15)
             {
@@ -643,7 +669,7 @@ namespace PlistCS
         private static byte[] RegulateNullBytes(byte[] value, int minBytes)
         {
             Array.Reverse(value);
-            List<byte> bytes = value.ToList();
+            List<byte> bytes = new List<byte>(value);
             for (int i = 0; i < bytes.Count; i++)
             {
                 if (bytes[i] == 0 && bytes.Count > minBytes)
@@ -798,9 +824,13 @@ namespace PlistCS
                     {
                         return parseBinaryByteArray(offsetTable[objRef]);
                     }
-                case 0x50:
+                case 0x50://String ASCII
                     {
-                        return parseBinaryString(offsetTable[objRef]);
+                        return parseBinaryAsciiString(offsetTable[objRef]);
+                    }
+                case 0x60://String Unicode
+                    {
+                        return parseBinaryUnicodeString(offsetTable[objRef]);
                     }
                 case 0xD0:
                     {
@@ -850,16 +880,42 @@ namespace PlistCS
             return BitConverter.ToDouble(RegulateNullBytes(buffer, 8), 0);
         }
 
-        private static object parseBinaryString(int headerPosition)
+        private static object parseBinaryAsciiString(int headerPosition)
         {
             int charStartPosition;
             int charCount = getCount(headerPosition, out charStartPosition);
-            string buffer = "";
-            foreach (byte byt in objectTable.GetRange(charStartPosition, charCount))
+
+            var buffer = objectTable.GetRange(charStartPosition, charCount);
+            return buffer.Count > 0 ? Encoding.ASCII.GetString(buffer.ToArray()) : string.Empty;
+        }
+
+        private static object parseBinaryUnicodeString(int headerPosition)
+        {
+            int charStartPosition;
+            int charCount = getCount(headerPosition, out charStartPosition);
+            charCount = charCount * 2;
+
+            byte[] buffer = new byte[charCount];
+            byte one, two;
+
+            for (int i = 0; i < charCount; i+=2)
             {
-                buffer += Convert.ToChar(byt);
+                one = objectTable.GetRange(charStartPosition+i,1)[0];
+                two = objectTable.GetRange(charStartPosition + i+1, 1)[0];
+
+                if (BitConverter.IsLittleEndian)
+                {
+                    buffer[i] = two;
+                    buffer[i + 1] = one;
+                }
+                else
+                {
+                    buffer[i] = one;
+                    buffer[i + 1] = two;
+                }
             }
-            return buffer;
+
+            return Encoding.Unicode.GetString(buffer);
         }
 
         private static object parseBinaryByteArray(int headerPosition)
@@ -870,6 +926,11 @@ namespace PlistCS
         }
 
         #endregion
+    }
+    
+    public enum plistType
+    {
+        Auto, Binary, Xml
     }
 
     public static class PlistDateConverter
