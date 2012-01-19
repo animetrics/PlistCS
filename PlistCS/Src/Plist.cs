@@ -129,7 +129,8 @@ namespace PlistCS
                 using (XmlWriter xmlWriter = XmlWriter.Create(ms, xmlWriterSettings))
                 {
                     xmlWriter.WriteStartDocument(); 
-                    xmlWriter.WriteComment("DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" " + "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"");
+                    //xmlWriter.WriteComment("DOCTYPE plist PUBLIC \"-//Apple//DTD PLIST 1.0//EN\" " + "\"http://www.apple.com/DTDs/PropertyList-1.0.dtd\"");
+                    xmlWriter.WriteDocType("plist", "-//Apple Computer//DTD PLIST 1.0//EN", "http://www.apple.com/DTDs/PropertyList-1.0.dtd", null);
                     xmlWriter.WriteStartElement("plist");
                     xmlWriter.WriteAttributeString("version", "1.0");
                     compose(value, xmlWriter);
