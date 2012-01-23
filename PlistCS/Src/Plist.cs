@@ -96,6 +96,7 @@ namespace PlistCS
             else
             {
                 XmlDocument xml = new XmlDocument();
+                xml.XmlResolver = null;
                 xml.Load(stream);
                 return readXml(xml);
             }
