@@ -48,7 +48,7 @@ namespace PlistCS
         {
             using (FileStream f = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                return readPlist(f);
+                return readPlist(f, plistType.Auto);
             }
         }
 
@@ -59,7 +59,7 @@ namespace PlistCS
 
         public static object readPlist(byte[] data)
         {
-            return readPlist(new MemoryStream(data));
+            return readPlist(new MemoryStream(data), plistType.Auto);
         }
 
         public static plistType getPlistType(Stream stream)
@@ -77,7 +77,7 @@ namespace PlistCS
             }
         }
 
-        public static object readPlist(Stream stream, plistType type = plistType.Auto)
+        public static object readPlist(Stream stream, plistType type)
         {
             if (type == plistType.Auto)
             {
