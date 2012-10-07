@@ -223,7 +223,7 @@ namespace PlistCS
         private static object readXml(XmlDocument xml)
         {
             XmlNode rootNode = xml.DocumentElement.ChildNodes[0];
-            return (Dictionary<string, object>)parse(rootNode);
+            return parse(rootNode);
         }
 
         private static object readBinary(byte[] data)
