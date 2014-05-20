@@ -44,6 +44,7 @@ namespace PlistCS
 
         #region Public Functions
 
+        public static T readPlist<T>(string path) { return (T)readPlist(path); }
         public static object readPlist(string path)
         {
             using (FileStream f = new FileStream(path, FileMode.Open, FileAccess.Read))
@@ -52,11 +53,13 @@ namespace PlistCS
             }
         }
 
+        public static T readPlistSource<T>(string source) { return (T)readPlistSource(source); }
         public static object readPlistSource(string source)
         {
             return readPlist(System.Text.Encoding.UTF8.GetBytes(source));
         }
 
+        public static T readPlist<T>(byte[] data) { return (T)readPlist(data); }
         public static object readPlist(byte[] data)
         {
             return readPlist(new MemoryStream(data), plistType.Auto);
@@ -77,6 +80,7 @@ namespace PlistCS
             }
         }
 
+        public static T readPlist<T>(Stream stream, plistType type) { return (T)readPlist(stream, type); }
         public static object readPlist(Stream stream, plistType type)
         {
             if (type == plistType.Auto)

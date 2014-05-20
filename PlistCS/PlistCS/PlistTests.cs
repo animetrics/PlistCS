@@ -69,12 +69,14 @@ namespace Testing
         public void ReadBinary()
         {
             CheckDictionary((Dictionary<string, object>)Plist.readPlist(sourceBinPath));
+            CheckDictionary(Plist.readPlist<Dictionary<string, object>>(sourceBinPath));
         }
 
         [TestMethod]
         public void ReadXml()
         {
             CheckDictionary((Dictionary<string, object>)Plist.readPlist(sourceXmlPath));
+            CheckDictionary(Plist.readPlist<Dictionary<string, object>>(sourceXmlPath));
         }
 
         [TestMethod]
