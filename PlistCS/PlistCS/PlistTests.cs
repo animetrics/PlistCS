@@ -68,35 +68,35 @@ namespace Testing
         [TestMethod]
         public void ReadBinary()
         {
-            CheckDictionary((Dictionary<string, object>)Plist.readPlist(sourceBinPath));
-            CheckDictionary(Plist.readPlist<Dictionary<string, object>>(sourceBinPath));
+            CheckDictionary((Dictionary<string, object>)Plist.ReadPlist(sourceBinPath));
+            CheckDictionary(Plist.ReadPlist<Dictionary<string, object>>(sourceBinPath));
         }
 
         [TestMethod]
         public void ReadXml()
         {
-            CheckDictionary((Dictionary<string, object>)Plist.readPlist(sourceXmlPath));
-            CheckDictionary(Plist.readPlist<Dictionary<string, object>>(sourceXmlPath));
+            CheckDictionary((Dictionary<string, object>)Plist.ReadPlist(sourceXmlPath));
+            CheckDictionary(Plist.ReadPlist<Dictionary<string, object>>(sourceXmlPath));
         }
 
         [TestMethod]
         public void WriteBinary()
         {
-            Plist.writeBinary(CreateDictionary(), targetBinPath);
-            CheckDictionary((Dictionary<string, object>)Plist.readPlist(targetBinPath));
+            Plist.WriteBinary(CreateDictionary(), targetBinPath);
+            CheckDictionary((Dictionary<string, object>)Plist.ReadPlist(targetBinPath));
         }
 
         [TestMethod]
         public void WriteXml()
         {
-            Plist.writeXml(CreateDictionary(), targetXmlPath);
-            CheckDictionary((Dictionary<string, object>)Plist.readPlist(targetXmlPath));
+            Plist.WriteXml(CreateDictionary(), targetXmlPath);
+            CheckDictionary((Dictionary<string, object>)Plist.ReadPlist(targetXmlPath));
         }
 
         [TestMethod]
         public void ReadWriteBinaryByteArray()
         {
-            CheckDictionary((Dictionary<string, object>)Plist.readPlist(Plist.writeBinary(CreateDictionary())));
+            CheckDictionary((Dictionary<string, object>)Plist.ReadPlist(Plist.WriteBinary(CreateDictionary())));
         }
     }
 }

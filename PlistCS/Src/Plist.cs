@@ -42,54 +42,91 @@ namespace PlistCS
         private static int offsetByteSize;
         private static long offsetTableOffset;
 
+        #region Deprecated(obsoleted) public methods
+
+        [Obsolete("Use ReadPlist(string path) instead")]
+        public static object readPlist(string path) { return ReadPlist(path); }
+
+        [Obsolete("Use ReadPlistSource(source) instead")]
+        public static object readPlistSource(string source) { return ReadPlistSource(source); }
+
+        [Obsolete("Use ReadPlist(data) instead")]
+        public static object readPlist(byte[] data) { return ReadPlist(data); }
+
+        [Obsolete("Use GetPlistType(stream) instead")]
+        public static PlistType getPlistType(Stream stream) { return GetPlistType(stream); }
+
+        [Obsolete("Use ReadPlist(stream, type) instead")]
+        public static object readPlist(Stream stream, PlistType type) { return ReadPlist(stream, type); }
+
+        [Obsolete("Use WriteXml(value, path) instead")]
+        public static void writeXml(object value, string path) { WriteXml(value, path); }
+
+        [Obsolete("Use WriteXml(value, stream) instead")]
+        public static void writeXml(object value, Stream stream) { WriteXml(value, stream); }
+
+        [Obsolete("Use WriteXml(value) instead")]
+        public static string writeXml(object value) { return WriteXml(value); }
+
+        [Obsolete("Use WriteBinary(value, path) instead")]
+        public static void writeBinary(object value, string path) { WriteBinary(value, path); }
+
+        [Obsolete("Use WriteBinary(value, stream) instead")]
+        public static void writeBinary(object value, Stream stream) { WriteBinary(value, stream); }
+
+        [Obsolete("Use WriteBinary(value) instead")]
+        public static byte[] writeBinary(object value) { return WriteBinary(value); }
+
+        #endregion
+
         #region Public Functions
 
-        public static T readPlist<T>(string path) { return (T)readPlist(path); }
-        public static object readPlist(string path)
+        public static T ReadPlist<T>(string path) { return (T)ReadPlist(path); }
+        public static object ReadPlist(string path)
         {
             using (FileStream f = new FileStream(path, FileMode.Open, FileAccess.Read))
             {
-                return readPlist(f, plistType.Auto);
+                return ReadPlist(f, PlistType.Auto);
             }
         }
 
-        public static T readPlistSource<T>(string source) { return (T)readPlistSource(source); }
-        public static object readPlistSource(string source)
+        public static T ReadPlistSource<T>(string source) { return (T)ReadPlistSource(source); }
+        public static object ReadPlistSource(string source)
         {
-            return readPlist(System.Text.Encoding.UTF8.GetBytes(source));
+            return ReadPlist(System.Text.Encoding.UTF8.GetBytes(source));
         }
 
-        public static T readPlist<T>(byte[] data) { return (T)readPlist(data); }
-        public static object readPlist(byte[] data)
+        public static T ReadPlist<T>(byte[] data) { return (T)ReadPlist(data); }
+        public static object ReadPlist(byte[] data)
         {
-            return readPlist(new MemoryStream(data), plistType.Auto);
+            return ReadPlist(new MemoryStream(data), PlistType.Auto);
         }
 
-        public static plistType getPlistType(Stream stream)
+        public static PlistType GetPlistType(Stream stream)
         {
             byte[] magicHeader = new byte[8];
             stream.Read(magicHeader, 0, 8);
 
             if (BitConverter.ToInt64(magicHeader, 0) == 3472403351741427810)
             {
-                return plistType.Binary;
+                return PlistType.Binary;
             }
             else
             {
-                return plistType.Xml;
+                return PlistType.Xml;
             }
         }
 
-        public static T readPlist<T>(Stream stream, plistType type) { return (T)readPlist(stream, type); }
-        public static object readPlist(Stream stream, plistType type)
+        public static T ReadPlist<T>(Stream stream, PlistType type) { return (T)ReadPlist(stream, type); }
+        public static object ReadPlist(Stream stream, PlistType type)
         {
-            if (type == plistType.Auto)
+            if (type == PlistType.Auto)
             {
-                type = getPlistType(stream);
+                type = GetPlistType(stream);
                 stream.Seek(0, SeekOrigin.Begin);
             }
 
-            if (type == plistType.Binary)
+            if (type == PlistType.Binary)
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
@@ -106,23 +143,23 @@ namespace PlistCS
             }
         }
 
-        public static void writeXml(object value, string path)
+        public static void WriteXml(object value, string path)
         {
             using (StreamWriter writer = new StreamWriter(path))
             {
-                writer.Write(writeXml(value));
+                writer.Write(WriteXml(value));
             }
         }
 
-        public static void writeXml(object value, Stream stream)
+        public static void WriteXml(object value, Stream stream)
         {
             using (StreamWriter writer = new StreamWriter(stream))
             {
-                writer.Write(writeXml(value));
+                writer.Write(WriteXml(value));
             }
         }
 
-        public static string writeXml(object value)
+        public static string WriteXml(object value)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -148,23 +185,23 @@ namespace PlistCS
             }
         }
 
-        public static void writeBinary(object value, string path)
+        public static void WriteBinary(object value, string path)
         {
             using (BinaryWriter writer = new BinaryWriter(new FileStream(path, FileMode.Create)))
             {
-                writer.Write(writeBinary(value));
+                writer.Write(WriteBinary(value));
             }
         }
 
-        public static void writeBinary(object value, Stream stream)
+        public static void WriteBinary(object value, Stream stream)
         {
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                writer.Write(writeBinary(value));
+                writer.Write(WriteBinary(value));
             }
         }
 
-        public static byte[] writeBinary(object value)
+        public static byte[] WriteBinary(object value)
         {
             offsetTable.Clear();
             objectTable.Clear();
@@ -929,8 +966,13 @@ namespace PlistCS
 
         #endregion
     }
-    
+
+    [Obsolete("use PlistType(uppercase) instead")]
     public enum plistType
+    {
+        Auto, Binary, Xml
+    }
+    public enum PlistType
     {
         Auto, Binary, Xml
     }
