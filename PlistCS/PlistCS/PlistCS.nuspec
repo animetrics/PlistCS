@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Mark Tilton, $author$</authors>
+    <owners>Brian Lachniet</owners>
+    <licenseUrl>https://github.com/animetrics/PlistCS/blob/master/PlistCS/Src/Plist.cs</licenseUrl>
+    <projectUrl>https://github.com/animetrics/PlistCS</projectUrl>
+    <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>-->
+    <description>$description$</description>
+    <releaseNotes>Initial release.</releaseNotes>
+    <copyright>Copyright Mark Tilton, Animetrics Inc. 2014</copyright>
+    <tags>plist</tags>
+  </metadata>
+</package>

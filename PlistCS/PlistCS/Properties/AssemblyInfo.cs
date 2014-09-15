@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("PlistCS")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A C# Property List (plist) serialization library.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Animetrics")]
 [assembly: AssemblyProduct("PlistCS")]
