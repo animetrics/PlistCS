@@ -5,7 +5,7 @@
     <version>$version$</version>
     <title>$title$</title>
     <authors>Mark Tilton, $author$</authors>
-    <owners>Brian Lachniet</owners>
+    <owners>Mark Tilton, $author$</owners>
     <licenseUrl>https://github.com/animetrics/PlistCS/blob/master/PlistCS/Src/Plist.cs</licenseUrl>
     <projectUrl>https://github.com/animetrics/PlistCS</projectUrl>
     <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>
