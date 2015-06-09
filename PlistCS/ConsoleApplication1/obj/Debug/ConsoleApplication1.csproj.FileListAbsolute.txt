@@ -1,8 +1,0 @@
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe.config
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\ConsoleApplication1\bin\Debug\ConsoleApplication1.exe
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\ConsoleApplication1\bin\Debug\ConsoleApplication1.pdb
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\ConsoleApplication1\bin\Debug\PlistCS.dll
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\ConsoleApplication1\bin\Debug\PlistCS.pdb
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\ConsoleApplication1\obj\Debug\ConsoleApplication1.csprojResolveAssemblyReference.cache
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\ConsoleApplication1\obj\Debug\ConsoleApplication1.exe
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\ConsoleApplication1\obj\Debug\ConsoleApplication1.pdb

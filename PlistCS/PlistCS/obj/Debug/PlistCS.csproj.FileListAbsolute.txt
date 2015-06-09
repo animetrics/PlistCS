@@ -1,5 +1,0 @@
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\PlistCS\bin\Debug\PlistCS.dll
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\PlistCS\bin\Debug\PlistCS.pdb
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\PlistCS\obj\Debug\PlistCS.csprojResolveAssemblyReference.cache
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\PlistCS\obj\Debug\PlistCS.dll
-C:\Users\Justin\Code Projects\PlistCS\PlistCS\PlistCS\obj\Debug\PlistCS.pdb
