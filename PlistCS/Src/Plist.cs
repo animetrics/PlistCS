@@ -319,9 +319,16 @@ namespace PlistCS
                 case "string":
                     return node.InnerText;
                 case "integer":
-                  //  int result;
-                    //int.TryParse(node.InnerText, System.Globalization.NumberFormatInfo.InvariantInfo, out result);
-                    return Convert.ToInt32(node.InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                    int result;
+                    bool isInt32 = Int32.TryParse(node.InnerText, out result);
+                    if(isInt32)
+                    {
+                        return result;
+                    }
+                    else
+                    {
+                        return Convert.ToInt64(node.InnerText, System.Globalization.NumberFormatInfo.InvariantInfo);
+                    }
                 case "real":
                     return Convert.ToDouble(node.InnerText,System.Globalization.NumberFormatInfo.InvariantInfo);
                 case "false":
@@ -346,9 +353,13 @@ namespace PlistCS
             {
                 writer.WriteElementString("string", value as string);
             }
-            else if (value is int || value is long)
+            else if (value is int)
             {
-                writer.WriteElementString("integer", ((int)value).ToString(System.Globalization.NumberFormatInfo.InvariantInfo));
+                writer.WriteElementString("integer", ((Int32)value).ToString(System.Globalization.NumberFormatInfo.InvariantInfo));
+            }
+            else if (value is long)
+            {
+                writer.WriteElementString("integer", ((Int64)value).ToString(System.Globalization.NumberFormatInfo.InvariantInfo));
             }
             else if (value is System.Collections.Generic.Dictionary<string, object> ||
               value.GetType().ToString().StartsWith("System.Collections.Generic.Dictionary`2[System.String"))
