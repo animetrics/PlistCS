@@ -4,6 +4,7 @@ DESCRIPTION
 
 This is a C# Property List (plist) serialization library (MIT license).
 It supports both XML and binary versions of the plist format.
+Please Do like and Support my efforts! Thank you!
 
 plist           C#
 __________________________________________________________________________________
